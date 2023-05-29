@@ -66,6 +66,11 @@ function App({ signOut, user }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  async function signOutFromApp(){
+    await DataStore.clear();
+    signOut();
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -80,7 +85,7 @@ function App({ signOut, user }) {
         <input type="button" value="DELETE ALL" onClick={() => { onDeleteAll(); listPosts(setPosts)} } />
         <input type="button" value="QUERY rating > 4" onClick={() => { onQuery(setPosts)} } />
         <input type="button" value="ALL POST" onClick={() => { listPosts(setPosts)} } />
-        <input type="button" value="SIGN OUT" onClick={signOut}/>
+        <input type="button" value="SIGN OUT" onClick={() => {signOutFromApp()}}/>
       </div>
       <table border="1">
         <thead>
