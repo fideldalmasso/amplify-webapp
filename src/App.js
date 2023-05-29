@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
 
 import Amplify from "@aws-amplify/core";
 import { DataStore, Predicates } from "@aws-amplify/datastore";
@@ -38,7 +41,7 @@ async function listPosts(setPosts) {
   setPosts(posts);
 }
 
-function App() {
+function App({ signOut, user }) {
 
   const [posts, setPosts] = useState([]);
 
@@ -68,10 +71,16 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
       <div>
+      <h3>
+        Hello {user.attributes.email}!
+        <br/>
+      ({user.username})
+      </h3>
         <input type="button" value="NEW" onClick={() => { onCreate(); listPosts(setPosts)} } />
         <input type="button" value="DELETE ALL" onClick={() => { onDeleteAll(); listPosts(setPosts)} } />
         <input type="button" value="QUERY rating > 4" onClick={() => { onQuery(setPosts)} } />
         <input type="button" value="ALL POST" onClick={() => { listPosts(setPosts)} } />
+        <input type="button" value="SIGN OUT" onClick={signOut}/>
       </div>
       <table border="1">
         <thead>
@@ -83,10 +92,9 @@ function App() {
           } )}
         </tbody>
       </table>
-      <a href="App.js">Download source code</a>
       </header>
     </div>
   );
 }
 
-export default App;
+export default withAuthenticator(App);

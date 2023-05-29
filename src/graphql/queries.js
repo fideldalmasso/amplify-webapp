@@ -16,6 +16,7 @@ export const getPost = /* GraphQL */ `
           _deleted
           _lastChangedAt
           postCommentsId
+          owner
         }
         nextToken
         startedAt
@@ -27,6 +28,7 @@ export const getPost = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
@@ -51,6 +53,7 @@ export const listPosts = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        owner
       }
       nextToken
       startedAt
@@ -84,6 +87,7 @@ export const syncPosts = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        owner
       }
       nextToken
       startedAt
@@ -109,6 +113,7 @@ export const getComment = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        owner
       }
       createdAt
       updatedAt
@@ -116,6 +121,7 @@ export const getComment = /* GraphQL */ `
       _deleted
       _lastChangedAt
       postCommentsId
+      owner
     }
   }
 `;
@@ -139,6 +145,7 @@ export const listComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          owner
         }
         createdAt
         updatedAt
@@ -146,6 +153,7 @@ export const listComments = /* GraphQL */ `
         _deleted
         _lastChangedAt
         postCommentsId
+        owner
       }
       nextToken
       startedAt
@@ -178,6 +186,7 @@ export const syncComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          owner
         }
         createdAt
         updatedAt
@@ -185,6 +194,7 @@ export const syncComments = /* GraphQL */ `
         _deleted
         _lastChangedAt
         postCommentsId
+        owner
       }
       nextToken
       startedAt

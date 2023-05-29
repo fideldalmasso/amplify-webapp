@@ -1,18 +1,18 @@
-input AMPLIFY { globalAuthRule: AuthRule = { allow: public } }
+# input AMPLIFY { globalAuthRule: AuthRule = { allow: public } }
 
 enum PostStatus {
   ACTIVE
   INACTIVE
 }
 
-type Post @model {
+type Post @model @auth(rules: [{ allow: owner }]) {
   id: ID!
   title: String!
   comments: [Comment] @hasMany
   rating: Int!
   status: PostStatus!
 }
-type Comment @model {
+type Comment @model @auth(rules: [{ allow: owner }]) {
   id: ID!
   content: String
   post: Post @belongsTo
