@@ -15,5 +15,23 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolId": "string",
       "UserPoolName": "string"
     }
+  },
+  "function": {
+    "amplifydatastoredc922e60": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "amplifydatastorelayere2169417": {
+      "Arn": "string"
+    }
+  },
+  "storage": {
+    "s39c9d864b": {
+      "BucketName": "string",
+      "Region": "string"
+    }
   }
 }

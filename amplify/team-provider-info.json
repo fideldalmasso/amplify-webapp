@@ -17,6 +17,19 @@
       },
       "auth": {
         "amplifydatastore4430c54a": {}
+      },
+      "function": {
+        "amplifydatastoredc922e60": {
+          "deploymentBucketName": "amplify-amplify-datastore-dev-31245-deployment",
+          "s3Key": "amplify-builds/amplifydatastoredc922e60-756c36466543784e334b-build.zip"
+        },
+        "amplifydatastorelayere2169417": {
+          "deploymentBucketName": "amplify-amplify-datastore-dev-31245-deployment",
+          "s3Key": "amplify-builds/amplifydatastorelayere2169417-LambdaLayerVersion520f04e4-build.zip"
+        }
+      },
+      "storage": {
+        "s39c9d864b": {}
       }
     }
   }

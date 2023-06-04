@@ -52,5 +52,89 @@
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
     }
+  },
+  "function": {
+    "amplifydatastoredc922e60": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifyDatasource"
+        },
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "amplifydatastore4430c54a"
+        },
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "s39c9d864b"
+        },
+        {
+          "attributes": [
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "amplifydatastorelayere2169417"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "amplifydatastorelayere2169417": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "LambdaLayer"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_amplifydatastoredc922e60_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifydatastoredc922e60"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifydatastoredc922e60_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifydatastoredc922e60"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifydatastorelayere2169417_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifydatastorelayere2169417"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifydatastorelayere2169417_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifydatastorelayere2169417"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "s39c9d864b": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
   }
 }
