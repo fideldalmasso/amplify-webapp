@@ -26,6 +26,13 @@ export type AmplifyDependentResourcesAttributes = {
     },
     "amplifydatastorelayere2169417": {
       "Arn": "string"
+    },
+    "lambdaFidel": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
     }
   },
   "storage": {

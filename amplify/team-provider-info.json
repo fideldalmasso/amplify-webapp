@@ -26,6 +26,10 @@
         "amplifydatastorelayere2169417": {
           "deploymentBucketName": "amplify-amplify-datastore-dev-31245-deployment",
           "s3Key": "amplify-builds/amplifydatastorelayere2169417-LambdaLayerVersion520f04e4-build.zip"
+        },
+        "lambdaFidel": {
+          "deploymentBucketName": "amplify-amplify-datastore-dev-31245-deployment",
+          "s3Key": "amplify-builds/lambdaFidel-5a6b624e6f6665737778-build.zip"
         }
       },
       "storage": {

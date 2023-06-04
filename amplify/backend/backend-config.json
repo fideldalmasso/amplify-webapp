@@ -94,6 +94,11 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "LambdaLayer"
+    },
+    "lambdaFidel": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -126,6 +131,22 @@
         {
           "category": "function",
           "resourceName": "amplifydatastorelayere2169417"
+        }
+      ]
+    },
+    "AMPLIFY_function_lambdaFidel_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lambdaFidel"
+        }
+      ]
+    },
+    "AMPLIFY_function_lambdaFidel_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lambdaFidel"
         }
       ]
     }
