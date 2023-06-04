@@ -15,22 +15,15 @@ export const onCreatePost = /* GraphQL */ `
           content
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           postCommentsId
           owner
         }
         nextToken
-        startedAt
       }
       rating
       status
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       owner
     }
   }
@@ -49,22 +42,15 @@ export const onUpdatePost = /* GraphQL */ `
           content
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           postCommentsId
           owner
         }
         nextToken
-        startedAt
       }
       rating
       status
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       owner
     }
   }
@@ -83,22 +69,15 @@ export const onDeletePost = /* GraphQL */ `
           content
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           postCommentsId
           owner
         }
         nextToken
-        startedAt
       }
       rating
       status
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       owner
     }
   }
@@ -116,22 +95,15 @@ export const onCreateComment = /* GraphQL */ `
         title
         comments {
           nextToken
-          startedAt
         }
         rating
         status
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         owner
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       postCommentsId
       owner
     }
@@ -150,22 +122,15 @@ export const onUpdateComment = /* GraphQL */ `
         title
         comments {
           nextToken
-          startedAt
         }
         rating
         status
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         owner
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       postCommentsId
       owner
     }
@@ -184,22 +149,15 @@ export const onDeleteComment = /* GraphQL */ `
         title
         comments {
           nextToken
-          startedAt
         }
         rating
         status
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         owner
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       postCommentsId
       owner
     }
