@@ -1,19 +1,15 @@
 import Amplify from '@aws-amplify/core';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Hub } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import logo from './logo.svg';
-// import { DataStore, Predicates } from "@aws-amplify/datastore";
 import awsConfig from './aws-exports';
-import { PostStatus } from './models';
-
-// import { GraphQLQuery } from '@aws-amplify/api';
-// import { CreateTodoInput, CreateTodoMutation } from './API';
 import * as mutations from './graphql/mutations';
 import * as queries from './graphql/queries';
 import * as subscriptions from './graphql/subscriptions';
+import logo from './logo.svg';
+import { PostStatus } from './models';
 
 Amplify.configure(awsConfig);
 
@@ -28,80 +24,105 @@ async function onCreate() {
     }(1, 7)),
     status: PostStatus.ACTIVE,
   };
-  const response = await API.graphql({
+
+  // DataStore.save(
+  //   new Post(postDetails)
+  // );
+
+  const createResponse = await API.graphql({
     query: mutations.createPost,
     variables: { input: postDetails },
   });
-  console.log('response=', response);
-  // DataStore.save(
-  //   new Post({
-  //     title: `New title ${Date.now()}`,
-  //     rating: (function getRandomInt(min, max) {
-  //       min = Math.ceil(min);
-  //       max = Math.floor(max);
-  //       return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-  //     })(1, 7),
-  //     status: PostStatus.ACTIVE
-  //   })
-  // );
+  console.log('createResponse=', createResponse);
 }
 
 async function onQuery(setPosts) {
   // const posts = await DataStore.query(Post, c => c.rating.gt(4));
   const posts = await API.graphql({ query: queries.listPosts, variables: { filter: { rating: { gt: 4 } } } });
-  setPosts(posts);
+  setPosts(posts.data?.listPosts?.items);
+}
+
+async function onDeleteAll(posts) {
+  // DataStore.delete(Post, Predicates.ALL);
+  posts.forEach((p) => {
+    API
+    .graphql({ query: mutations.deletePost, variables: { input: { id: p.id } } })
+    .then((response) => { console.log('deleteResponse=', response); }).catch((error) => { console.log(error); });
+  });
 }
 
 async function listPosts(setPosts) {
   // const posts = await DataStore.query(Post, Predicates.ALL);
   const posts = await API.graphql({ query: queries.listPosts });
-  console.log('posts=', posts);
+  console.log('listPosts=', posts);
   setPosts(posts.data?.listPosts?.items);
 }
+
+async function updatePost(post) {
+  const newPost = {
+    id: post.id,
+    title: post.title,
+    rating: post.rating,
+    status: post.status,
+   };
+  newPost.title = `Updated title ${Date.now()}`;
+  delete newPost.updatedAt;
+
+  console.log('newPost=', newPost);
+  const updateResponse = await API.graphql({ query: mutations.updatePost, variables: { input: newPost } });
+  console.log('updateResponse=', updateResponse);
+}
+
+const subscribeTo = (subscriptionString, subscriptionName, setItems) => {
+  const subscriptionClient = API.graphql(graphqlOperation(subscriptionString)).subscribe({
+  next: (response) => {
+    const newItem = response.value.data[subscriptionName];
+    console.log('firedSubscription=', subscriptionName);
+
+    switch (subscriptionName) {
+      case subscriptionName.match(/^onCreate.*/)?.input:
+        setItems((prevItems) => [...prevItems, newItem]);
+        break;
+
+      case subscriptionName.match(/^onUpdate.*/)?.input:
+        setItems((prevItems) => prevItems.map((item) => (item.id === newItem.id ? newItem : item)));
+        break;
+
+      case subscriptionName.match(/^onDelete.*/)?.input:
+        setItems((prevItems) => prevItems.filter((item) => item.id !== newItem.id));
+        break;
+
+      default:
+        break;
+    }
+  },
+  error: (error) => console.log('subError=', subscriptionName, error),
+  complete: () => console.log('subComplete=', subscriptionName),
+  onEstablished: () => console.log('subEstablished=', subscriptionName),
+  });
+  return subscriptionClient;
+};
 
 function App({ signOut, user }) {
   const [posts, setPosts] = useState([]);
 
-  async function onDeleteAll() {
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const p of posts) {
-      console.log('Deleting post id=', p.id);
-      API
-      .graphql({ query: mutations.deletePost, variables: { input: { id: p.id } } })
-      .then((response) => { console.log(response); }).catch((error) => { console.log(error); });
-    }
-    // DataStore.delete(Post, Predicates.ALL);
-  }
-
   useEffect(() => {
+    const subs = [];
+    console.log('user=', user);
+    console.log('user.attributes.sub=', user.attributes.sub);
     console.log('useEffect fired');
 
     listPosts(setPosts);
 
-    // Subscribe to creation of Posts
-    const sub = API.graphql(
-      graphqlOperation(subscriptions.onCreatePost),
-      // variables: { owner: user.username },
-    ).subscribe({
-      next: (newValue) => {
-        console.log('sub next fired');
-        console.log('newValue=', newValue);
-        // console.log('provider=', provider);
-        // console.log('value=', value);
-        // console.log({ provider, value });
-      },
-      error: (error) => console.warn(error),
-      complete: () => console.log('subscription complete'),
-      onEstablished: () => console.log('subscription established'),
+    subs.push(subscribeTo(subscriptions.onCreatePost, 'onCreatePost', setPosts));
+    subs.push(subscribeTo(subscriptions.onUpdatePost, 'onUpdatePost', setPosts));
+    subs.push(subscribeTo(subscriptions.onDeletePost, 'onDeletePost', setPosts));
+
+    // Listen for appsync events
+    Hub.listen('api', (data) => {
+      const { payload } = data;
+      console.log('event=', payload);
     });
-    console.log('sub=', sub);
-
-    // listPosts(setPosts);
-
-    // const subscription = DataStore.observe(Post).subscribe(msg => {
-    //   console.log(msg.model, msg.opType, msg.element);
-    //   listPosts(setPosts);
-    // });
 
     // const handleConnectionChange = () => {
     //   const condition = navigator.onLine ? 'online' : 'offline';
@@ -113,8 +134,11 @@ function App({ signOut, user }) {
     // window.addEventListener('offline', handleConnectionChange);
 
     // return () => subscription.unsubscribe();
-    // return () => sub.unsubscribe();
-  }, []);
+    // return () => postSubscription.unsubscribe();
+    return () => {
+      subs.forEach((subscription) => subscription.unsubscribe());
+    };
+  }, [user]);
 
   async function signOutFromApp() {
     // await DataStore.clear();
@@ -136,7 +160,6 @@ function App({ signOut, user }) {
             {user.username}
             )
           </h3>
-          {/* <input type="button" value="NEW" onClick={() => { onCreate(); listPosts(setPosts)} } /> */}
           <input
             type="button"
             value="NEW"
@@ -144,12 +167,11 @@ function App({ signOut, user }) {
               onCreate();
             }}
           />
-          {/* <input type="button" value="DELETE ALL" onClick={() => { onDeleteAll(); listPosts(setPosts)} } /> */}
           <input
             type="button"
             value="DELETE ALL"
             onClick={() => {
-              onDeleteAll();
+              onDeleteAll(posts);
             }}
           />
           <input
@@ -180,20 +202,30 @@ function App({ signOut, user }) {
               <td>Id</td>
               <td>Title</td>
               <td>Rating</td>
-              <td>Version</td>
+              <td>Status</td>
+              <td>UpdatedAt</td>
+              <td>Update</td>
             </tr>
           </thead>
           <tbody>
             {posts.map((item, i) => (
               <tr key={i}>
                 <td>
-                  {posts[i].id.substring(0, 8)}
+                  {item.id.substring(0, 8)}
                   ...
                 </td>
-                <td>{posts[i].title}</td>
-                <td>{posts[i].rating}</td>
-                {/* <td>{posts[i]._version}</td> */}
-                <td>xd</td>
+                <td>{item.title}</td>
+                <td>{item.rating}</td>
+                <td>{item.status}</td>
+                <td>{item.updatedAt}</td>
+                <td>
+                  <input
+                    type="button" value="modify"
+                    onClick={() => {
+                      updatePost(item);
+                    }}
+                  />
+                </td>
               </tr>
               ))}
           </tbody>
@@ -202,5 +234,4 @@ function App({ signOut, user }) {
     </div>
   );
 }
-
 export default withAuthenticator(App);
