@@ -1,10 +1,10 @@
 {
-  "projectName": "amplify-datastore",
-  "version": "3.1",
-  "frontend": "javascript",
   "providers": [
     "awscloudformation"
   ],
+  "projectName": "amplifydatastore",
+  "version": "3.1",
+  "frontend": "javascript",
   "javascript": {
     "framework": "react",
     "config": {

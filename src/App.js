@@ -103,6 +103,16 @@ const subscribeTo = (subscriptionString, subscriptionName, setItems) => {
   return subscriptionClient;
 };
 
+async function fullSubscription(modelName, setItems) {
+  const res = await API.graphql({ query: queries[`list${modelName}s`] });
+  setItems(res.data[`list${modelName}s`]?.items);
+  const subs = [];
+  subs.push(subscribeTo(subscriptions[`onCreate${modelName}`], `onCreate${modelName}`, setItems));
+  subs.push(subscribeTo(subscriptions[`onUpdate${modelName}`], `onUpdate${modelName}`, setItems));
+  subs.push(subscribeTo(subscriptions[`onDelete${modelName}`], `onDelete${modelName}`, setItems));
+  return subs;
+}
+
 function App({ signOut, user }) {
   const [posts, setPosts] = useState([]);
 
@@ -112,11 +122,12 @@ function App({ signOut, user }) {
     console.log('user.attributes.sub=', user.attributes.sub);
     console.log('useEffect fired');
 
-    listPosts(setPosts);
+    fullSubscription('Post', setPosts);
 
-    subs.push(subscribeTo(subscriptions.onCreatePost, 'onCreatePost', setPosts));
-    subs.push(subscribeTo(subscriptions.onUpdatePost, 'onUpdatePost', setPosts));
-    subs.push(subscribeTo(subscriptions.onDeletePost, 'onDeletePost', setPosts));
+    // listPosts(setPosts);
+    // subs.push(subscribeTo(subscriptions.onCreatePost, 'onCreatePost', setPosts));
+    // subs.push(subscribeTo(subscriptions.onUpdatePost, 'onUpdatePost', setPosts));
+    // subs.push(subscribeTo(subscriptions.onDeletePost, 'onDeletePost', setPosts));
 
     // Listen for appsync events
     Hub.listen('api', (data) => {
