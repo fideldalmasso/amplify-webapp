@@ -1,1 +1,1 @@
-![image](https://github.com/fideldalmasso/amplify-datastore/assets/39715777/7e0d8d07-fe45-4509-8e15-10c9051de788)
+![image](https://github.com/fideldalmasso/amplify-webapp/assets/39715777/8a453d1f-7e60-48be-9adb-ba06ffb6fdb1)
